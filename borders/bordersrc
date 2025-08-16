@@ -1,0 +1,12 @@
+#!/bin/bash
+
+options=(
+  style=round
+  order=above
+  width=3.0
+  hidpi=on
+  active_color=0xffb4befe   # Catppuccin mocha "lavender"
+  inactive_color=0x00000000 # Fully transparent
+)
+
+borders "${options[@]}"
