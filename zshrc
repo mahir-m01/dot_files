@@ -15,8 +15,8 @@ alias gnst="switch_account ~/.ssh/id_rsa_nst 'mahir-nst' 'mahirabd.official+gith
 switch_account() {
   ssh-add -D
   ssh-add "$1"
-  git config user.name "$2"
-  git config user.email "$3"
+  git config --global user.name "$2"
+  git config --global user.email "$3"
   ssh -T git@github.com
 }
 
@@ -52,3 +52,11 @@ eval "$(starship init zsh)"
 
 # Added by Antigravity
 export PATH="/Users/mahir/.antigravity/antigravity/bin:$PATH"
+# Added by Antigravity
+export PATH="/Users/mahir/.antigravity/antigravity/bin:$PATH"
+
+
+
+
+# opencode
+export PATH=/Users/mahir/.opencode/bin:$PATH

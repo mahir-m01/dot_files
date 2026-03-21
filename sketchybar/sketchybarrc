@@ -1,121 +1,114 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-source "$CONFIG_DIR/colors.sh"
+# === CONFIG ROOT ===
+CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
-##### Bar Appearance #####
+# === CATPPUCCIN MOCHA COLORS (Purple-focused) ===
+CLR_BG=0x00000000          # Transparent bar background
+CLR_COMP_BG=0xff1e1e2e     # Compartment background (base)
+CLR_COMP_BORDER=0xffcba6f7 # Compartment border (mauve - purple!)
+CLR_FG=0xffcdd6f4          # Foreground text (text)
+CLR_MAUVE=0xffcba6f7       # Mauve - main purple accent
+CLR_LAVENDER=0xffb4befe    # Lavender - lighter purple
+CLR_PINK=0xfff5c2e7        # Pink - softer accent
 
-sketchybar --bar position=top height=40 blur_radius=10 #color=$BAR_COLOR 
+# === PADDING CONSTANTS
+BAR_PADDING=8              # Outer bar padding
+ITEM_PADDING=6             # Default horizontal padding between items
+ICON_PADDING=2             # Consistent icon inner padding
+LABEL_PADDING=2            # Consistent label inner padding
+COMP_PADDING=6             # Compartment outer padding
 
-sketchybar --bar padding_left=5 padding_right=5
+# === BAR ===
+sketchybar --bar position=top height=34 blur_radius=0 color="$CLR_BG" padding_left="$BAR_PADDING" padding_right="$BAR_PADDING"
 
-##### Changing Defaults #####
+# # === WORKSPACES ===
+# sketchybar --add event aerospace_workspace_change
+# LABELS=("1" "2" "3" "4" "5" "6" "7" "8" "9")
+# LEFT_SPACE_ITEMS=()
+# INDEX=0
 
-default=(
-  padding_left=5
-  padding_right=5
-  icon.font="Hack Nerd Font:Regular:15.0"
-  label.font="SF Pro:Semibold:15.0"
-  icon.color=$WHITE
-  label.color=$WHITE
-  icon.padding_left=10
-  icon.padding_right=0
-  label.padding_left=10
-  label.padding_right=10
-  background.color=$ITEM_BG_COLOR
-  background.corner_radius=9
-  background.height=30
-)
-sketchybar --default "${default[@]}"
+# for sid in $(aerospace list-workspaces --all); do
+#   label="${LABELS[$INDEX]:-}"
+#   item="space.$sid"
+#   LEFT_SPACE_ITEMS+=("$item")
 
-##### Left Items #####
+#   sketchybar --add item "$item" left \
+#     --subscribe "$item" aerospace_workspace_change \
+#     --set "$item" \
+#       background.drawing=off \
+#       label="$label" \
+#       label.color="$CLR_FG" \
+#       icon.padding_left="$ICON_PADDING" \
+#       icon.padding_right="$ICON_PADDING" \
+#       label.padding_left="$LABEL_PADDING" \
+#       label.padding_right="$LABEL_PADDING" \
+#       click_script="aerospace workspace $sid" \
+#       script="$PLUGIN_DIR/aerospace.sh $sid"
 
-sketchybar --add item apple left \
-           --set apple icon= label.drawing=off icon.padding_right=10 \
-           --add item front_app left \
-           --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh"  \
-           --subscribe front_app front_app_switched
+#   ((INDEX++))
+# done
 
-sketchybar --add event aerospace_workspace_change
+# === DEFAULTS ===
+sketchybar --default \
+  padding_left="$ITEM_PADDING" \
+  padding_right="$ITEM_PADDING" \
+  icon.font="VictorMono Nerd Font:Regular:12.0" \
+  label.font="VictorMono Nerd Font:Regular:14.0" \
+  icon.color="$CLR_FG" \
+  label.color="$CLR_FG" \
+  icon.padding_left="$ICON_PADDING" \
+  icon.padding_right="$ICON_PADDING" \
+  label.padding_left="$LABEL_PADDING" \
+  label.padding_right="$LABEL_PADDING"
 
-sketchybar --add item window_title left \
-           --set window_title icon=\
-                               label.font="SF Pro:Semibold:14.0" \
-                               icon.padding_left=0 \
-                               width=dynamic \
-                               updates=on \
-                               update_freq=1 \
-                               script="$PLUGIN_DIR/aerospace_window_title.sh" \
-          --subscribe window_title aerospace_workspace_change
+# === FRONT APP ===
+sketchybar --add item front_app left \
+  --set front_app \
+    script="$PLUGIN_DIR/front_app.sh" \
+    label.y_offset=1 \
+    label.padding_right="$COMP_PADDING" \
+  --subscribe front_app front_app_switched
 
-sketchybar --add item music left \
-           --set music \
-             script="$PLUGIN_DIR/music.sh" \
-             icon= \
-             label.padding_left=0 \
-             icon.padding_right=8 \
-             label.color=0xffa6e3a1 \
-             icon.color=0xffa6e3a1 \
-             click_script="open -a Spotify" \
-             update_freq=2 \
-             drawing=off \    # start hidden
-           --subscribe music media_change
+# === RIGHT SIDE ITEMS ===
+sketchybar --add item clock right \
+  --set clock update_freq=10 script="$PLUGIN_DIR/clock.sh" label.padding_right="$COMP_PADDING"
 
+sketchybar --add item volume right \
+  --set volume script="$PLUGIN_DIR/volume.sh" \
+  --subscribe volume volume_change
 
-##### Right Items #####
+sketchybar --add item battery right \
+  --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+  --subscribe battery system_woke power_source_change
 
-sketchybar \
-  --add item clock right \
-    --set clock \
-      update_freq=10 \
-      icon=􀉉 \
-      script="$PLUGIN_DIR/clock.sh" \
-  \
-  --add item weather right \
-    --set weather \
-      script="$PLUGIN_DIR/weather.sh" \
-      icon= \
-      update_freq=300 \
-      label.padding_left=0 \
-      icon.padding_right=8 \
-      label.color=$WHITE \
-      icon.color=$WHITE \
-      click_script="open -a Weather" \
-      drawing=on \
-  \
-  --add item volume right \
-    --set volume \
-      script="$PLUGIN_DIR/volume.sh" \
-      padding_right=4 \
-      --subscribe volume volume_change \
-  \
-  --add item battery right \
-    --set battery \
-      update_freq=120 \
-      script="$PLUGIN_DIR/battery.sh" \
-      padding_right=4 \
-      --subscribe battery system_woke power_source_change \
-  \
-  --add item disk right \
-    --set disk \
-    script="$PLUGIN_DIR/disk.sh" \
-    icon= \
-     update_freq=3 \
-     label.padding_left=0 \
-     icon.padding_right=8 \
-    label.color=0xfff2cdcd \
-    icon.color=0xfff2cdcd \
-  \
-  --add graph cpu_usage right 50 \
-     --set cpu_usage script="$PLUGIN_DIR/cpu_usage.sh" \
-      update_freq=5 \
-      label.color=0xffcba6f7 \
-      graph.color=0xffcba6f7 \
-      graph.fill_color=0x55cba6f7 \
-      graph.line_width=2 \
-      icon.drawing=off
+sketchybar --add item net right \
+  --set net update_freq=120 script="$PLUGIN_DIR/wifi.sh"
 
-##### Force all scripts to run the first time #####
+# === ITEM GROUPS ===
+LEFT_ITEMS=("${LEFT_SPACE_ITEMS[@]}" front_app)
+RIGHT_ITEMS=(clock volume battery net)
+
+# === COMPARTMENTS ===
+sketchybar --add bracket left_compartment "${LEFT_ITEMS[@]}" \
+  --set left_compartment \
+    background.color="$CLR_COMP_BG" \
+    background.corner_radius=8 \
+    background.height=26 \
+    background.border_color="$CLR_COMP_BORDER" \
+    background.border_width=1 \
+    background.drawing=on
+
+sketchybar --add bracket right_compartment "${RIGHT_ITEMS[@]}" \
+  --set right_compartment \
+    background.color="$CLR_COMP_BG" \
+    background.corner_radius=8 \
+    background.height=26 \
+    background.border_color="$CLR_COMP_BORDER" \
+    background.border_width=1 \
+    background.padding_left=0 \
+    background.drawing=on
+
+# === FINALIZE ===
 sketchybar --update
-
-sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)

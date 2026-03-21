@@ -1,0 +1,40 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-gemini-auth@latest"],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      }
+    },
+    "agent-browser": {
+      "type": "local",
+      "command": ["npx", "-y", "agent-browser-mcp@latest"],
+      "enabled": true
+    }
+  },
+  "agent": {
+    "architect": { "file": "~/.config/opencode/agents/architect.md", "model": "github-copilot/claude-haiku-4.5" },
+    "backend": { "file": "~/.config/opencode/agents/backend.md", "model": "github-copilot/claude-haiku-4.5" },
+    "shield": { "file": "~/.config/opencode/agents/shield.md", "model": "github-copilot/claude-haiku-4.5" },
+    "ops": { "file": "~/.config/opencode/agents/ops.md", "model": "github-copilot/claude-haiku-4.5" },
+    "monkey": { "file": "~/.config/opencode/agents/monkey.md", "model": "github-copilot/claude-haiku-4.5" },
+    "scribe": { "file": "~/.config/opencode/agents/scribe.md", "model": "github-copilot/claude-haiku-4.5" },
+    "scout": { "file": "~/.config/opencode/agents/scout.md", "model": "github-copilot/claude-haiku-4.5" },
+    "professor": { "file": "~/.config/opencode/agents/professor.md", "model": "github-copilot/claude-haiku-4.5" },
+    "scribe-assistant": { "file": "~/.config/opencode/agents/scribe-assistant.md", "model": "github-copilot/claude-haiku-4.5" },
+    "frontend-mini": { "file": "~/.config/opencode/agents/frontend-mini.md", "model": "github-copilot/claude-haiku-4.5" },
+    "cloner": { "file": "~/.config/opencode/agents/cloner.md", "model": "github-copilot/claude-haiku-4.5" },
+    "frontend-taste": { "file": "~/.config/opencode/agents/frontend-taste.md", "model": "github-copilot/claude-haiku-4.5" },
+    "frontend-impeccable": { "file": "~/.config/opencode/agents/frontend-impeccable.md", "model": "github-copilot/claude-haiku-4.5" },
+    "refiner-taste": { "file": "~/.config/opencode/agents/refiner-taste.md", "model": "github-copilot/claude-haiku-4.5" },
+    "refiner-impeccable": { "file": "~/.config/opencode/agents/refiner-impeccable.md", "model": "github-copilot/claude-haiku-4.5" }
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  }
+}
