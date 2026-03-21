@@ -9,3 +9,16 @@ simple-update-notifier/
 wireshark/
 mole/
 mole/
+
+# Sensitive files
+**/.env*
+**/*.key
+**/*.pem
+**/*.crt
+**/*.pfx
+**/.ssh/
+**/id_rsa*
+**/id_ed25519*
+
+# System files
+**/.DS_Store
